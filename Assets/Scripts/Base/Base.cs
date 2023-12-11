@@ -8,40 +8,49 @@ public class Base : MonoBehaviour
     private UnitSpawner _unitSpawner;
     private List<Unit> _units;
     private Queue<Resource> _scannedResources;
+    private int _resousrceCount;
 
     private void Start()
     {
         _scanner = GetComponent<Scanner>();
         _unitSpawner = GetComponent<UnitSpawner>();
         _units = _unitSpawner.GetUnits();
-        _scannedResources = _scanner.GetResources();
     }
 
     private void Update()
     {
         Work();
+        Recycle();
     }
-
+        
     private void Work()
     {
+        _scannedResources = _scanner.GetResources();
+
         for (int i = 0; i < _units.Count; i++)
         {
             if (_units[i].IsVacant && _scannedResources.Count > 0)
             {
                 Resource resource = _scannedResources.Dequeue();
-                _units[i].SetTarget(resource.transform.position);
+                resource.SetFound();
+                _units[i].SetTargetResource(resource);
             }
         }
     }
 
-    //private void Recycle()
-    //{
-    //    if (transform.childCount > 0)
-    //    {
-    //        for (int i = 0; i < transform.childCount; i++)
-    //        {
-    //            Destroy(transform.GetChild(i).gameObject);
-    //        }
-    //    }
-    //}
+    private void Recycle()
+    {
+        if (transform.childCount > 0)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                if(transform.GetChild(i).TryGetComponent(out Resource resource))
+                {
+                    Destroy(resource.gameObject);
+                    _resousrceCount++;
+                    Debug.Log($"Количество ресурсов: {_resousrceCount}");
+                }
+            }
+        }
+    }
 }

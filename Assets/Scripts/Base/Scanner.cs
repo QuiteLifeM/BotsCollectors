@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class Scanner : MonoBehaviour
     private RaycastHit[] _hitsInfo;
     private Queue<Resource> _acceptedHits;
     private Ray _ray;
+    private WaitForSeconds _waitForSeconds;
+    private float _delay = 2f;
 
     public Queue<Resource> GetResources()
     {
@@ -17,27 +20,35 @@ public class Scanner : MonoBehaviour
 
     private void Awake()
     {
+        _waitForSeconds = new WaitForSeconds(_delay);
         _ray = new Ray(transform.position, transform.forward);
         _acceptedHits = new Queue<Resource>();
     }
 
-    private void Update()
+    private void Start()
     {
-        _hitsInfo = Physics.SphereCastAll(_ray, _radius);
+        StartCoroutine(Scan());
+    }
 
-        //Debug.Log(_hitsInfo.Length);
-
-        for(int i = 0;  i < _hitsInfo.Length; i++)
+    private IEnumerator Scan()
+    {
+        while (enabled)
         {
-            if (_hitsInfo[i].collider.tag == "Resource")
-            {
-                Resource resource;
-                _hitsInfo[i].collider.TryGetComponent(out resource);
-                _acceptedHits.Enqueue(resource);
-            }
-        }
+            _hitsInfo = Physics.SphereCastAll(_ray, _radius);
 
-        //Debug.Log(_acceptedHits.Count + "число ресурсов");
+            for (int i = 0; i < _hitsInfo.Length; i++)
+            {
+                if (_hitsInfo[i].collider.gameObject.TryGetComponent(out Resource resource))
+                {
+                    if (resource.IsFound == false)
+                    {
+                        _acceptedHits.Enqueue(resource);
+                    }
+                }
+            }
+
+            yield return _waitForSeconds;
+        }
     }
 
     private void OnDrawGizmos()

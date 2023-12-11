@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(UnitMover))]
 public class Unit : MonoBehaviour
 {
-
     private UnitMover _mover;
     private Vector3 _basePosition;
     private Resource _resource;
@@ -18,15 +17,10 @@ public class Unit : MonoBehaviour
         _basePosition = position;
     }
 
-    public void SetTarget(Vector3 target)
+    public void SetTargetResource(Resource resource)
     {
-        _mover.SetTarget(target);
-    }
-
-    public void Work()
-    {
-        IsVacant = false;
-        //Debug.Log("Ворк работае?");
+        _resource = resource;
+        _mover.SetTarget(resource.transform.position);
     }
 
     private void Awake()
@@ -35,32 +29,22 @@ public class Unit : MonoBehaviour
         _mover = GetComponent<UnitMover>();
     }
 
-    //private void Update()
-    //{
-    //    Work();
-    //}
-
     private void OnTriggerEnter(Collider collider)
     {
         if(collider.TryGetComponent(out Resource resource))
         {
-            _resource = resource;
-            IsVacant = false;
-            Debug.Log("Столкнулись");
-            _resource.transform.SetParent(transform);
-            _mover.SetTarget(_basePosition);
+            if (resource == _resource)
+            {
+                IsVacant = false;
+                _resource.transform.SetParent(transform);
+                _mover.SetTarget(_basePosition);
+            }
         }
 
         if(collider.TryGetComponent(out Base unitBase))
         {
             IsVacant = true;
-            Debug.Log("Пришел на базу");
             _resource.transform.SetParent(unitBase.transform);
         }
-    }
-
-    private void GrabResource()
-    {
-
     }
 }
