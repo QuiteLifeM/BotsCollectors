@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(UnitMover))]
@@ -20,31 +17,44 @@ public class Unit : MonoBehaviour
     public void SetTargetResource(Resource resource)
     {
         _resource = resource;
-        _mover.SetTarget(resource.transform.position);
+
+        if (_resource != null)
+        {
+            IsVacant = false;
+            _mover.SetTarget(resource.transform.position);
+        }
+        else
+        {
+            IsVacant = true;
+        }
     }
 
     private void Awake()
     {
         IsVacant = true;
         _mover = GetComponent<UnitMover>();
+        _mover.SetTarget(transform.position);
     }
 
     private void OnTriggerEnter(Collider collider)
     {
-        if(collider.TryGetComponent(out Resource resource))
+        if (collider.TryGetComponent(out Resource resource))
         {
             if (resource == _resource)
             {
-                IsVacant = false;
                 _resource.transform.SetParent(transform);
                 _mover.SetTarget(_basePosition);
             }
         }
 
-        if(collider.TryGetComponent(out Base unitBase))
+        if (collider.TryGetComponent(out Base unitBase))
         {
             IsVacant = true;
-            _resource.transform.SetParent(unitBase.transform);
+
+            if (_resource != null)
+            {
+                _resource.transform.SetParent(unitBase.transform);
+            }
         }
     }
 }

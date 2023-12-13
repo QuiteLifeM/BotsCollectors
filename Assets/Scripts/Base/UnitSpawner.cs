@@ -16,6 +16,14 @@ public class UnitSpawner : MonoBehaviour
         return _units;
     }
 
+    public void SpawnOneUnit()
+    {
+        int index = Random.Range(0, _point.Length);
+        Unit newUnit = Instantiate(_unit, _point[index].transform.position, Quaternion.identity);
+        newUnit.SetBasePosition(transform.position);
+        _units.Add(newUnit);
+    }
+
     private void Awake()
     {
         _base = GetComponent<Base>();
@@ -27,10 +35,7 @@ public class UnitSpawner : MonoBehaviour
     {
         for (int i = 0; i < _unitCount; i++)
         {
-            int index = Random.Range(0, _point.Length);
-            Unit newUnit = Instantiate(_unit, _point[index].transform.position, Quaternion.identity);
-            newUnit.SetBasePosition(transform.position);
-            _units.Add(newUnit);
+            SpawnOneUnit();
         }
     }
 }
