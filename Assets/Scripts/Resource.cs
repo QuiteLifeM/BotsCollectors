@@ -10,17 +10,14 @@ public class Resource : MonoBehaviour
         IsFound = true;
     }
 
+    public void SetGrabbed()
+    {
+        IsGrabbed = true;
+    }
+
     private void Awake()
     {
         IsFound = false;
         IsGrabbed = false;
-    }
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.gameObject.TryGetComponent(out Unit unit))
-        {
-            IsGrabbed = true;
-        }
     }
 }

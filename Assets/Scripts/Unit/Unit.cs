@@ -6,6 +6,7 @@ public class Unit : MonoBehaviour
     private UnitMover _mover;
     private Vector3 _basePosition;
     private Resource _resource;
+    private Flag _flag;
 
     public bool IsVacant { get; private set; }
 
@@ -14,9 +15,14 @@ public class Unit : MonoBehaviour
         _basePosition = position;
     }
 
-    public void SetTargetResource(Resource resource)
+    public void SetTarget(Resource resource)
     {
         _resource = resource;
+
+        if( _resource.IsGrabbed)
+        {
+            return;
+        }
 
         if (_resource != null)
         {
@@ -27,6 +33,13 @@ public class Unit : MonoBehaviour
         {
             IsVacant = true;
         }
+    }
+
+    public void SetTarget(Flag flag)
+    {
+
+        _mover.SetTarget(flag.transform.position);
+        IsVacant = false;
     }
 
     private void Awake()
@@ -40,8 +53,9 @@ public class Unit : MonoBehaviour
     {
         if (collider.TryGetComponent(out Resource resource))
         {
-            if (resource == _resource)
+            if (resource == _resource && resource.IsGrabbed != true)
             {
+                _resource.SetGrabbed();
                 _resource.transform.SetParent(transform);
                 _mover.SetTarget(_basePosition);
             }
@@ -49,11 +63,12 @@ public class Unit : MonoBehaviour
 
         if (collider.TryGetComponent(out Base unitBase))
         {
-            IsVacant = true;
 
             if (_resource != null)
             {
+                IsVacant = true;
                 _resource.transform.SetParent(unitBase.transform);
+                _mover.SetTarget(transform.position);
             }
         }
     }

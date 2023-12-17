@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class UnitMover : MonoBehaviour
 {
-    private float _speed = 5f;
+    private float _speed = 10f;
     private Vector3 _target;
 
     public void SetTarget(Vector3 target)
