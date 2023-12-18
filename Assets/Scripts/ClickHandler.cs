@@ -6,13 +6,11 @@ public class ClickHandler : MonoBehaviour
     [SerializeField] private Flag _flag;
     private Base _base;
 
-    // Start is called before the first frame update
     void Start()
     {
         _base = null;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -25,7 +23,6 @@ public class ClickHandler : MonoBehaviour
                     {
                         if(_flag.IsSet == false)
                         {
-                            Debug.Log("Спавн флага");
                             _flag.transform.position = hit.point;
                             _flag.Set();
                             _base.ReceiveFlag(_flag);

@@ -29,8 +29,7 @@ public class Base : MonoBehaviour
     private void Update()
     {
         Recycle();
-        GetKeyCommand();
-        GetUnits();
+        ExchangeResources();
     }
 
     public void GetUnit(Unit unit)
@@ -67,37 +66,35 @@ public class Base : MonoBehaviour
         _units = _unitSpawner.GetUnits();
     }
 
-    private void GetKeyCommand()
+    private void ExchangeResources()
     {
-        if (Input.GetKeyDown(KeyCode.D))
+        if (_flag != null && _flag.IsSet)
         {
-            Debug.Log("Спавн юнита");
-            ExchangeResourcesForUnits();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (IsProduced)
+            if (_resourceCount > 5)
             {
-                if (_resourceCount > 5)
+                _resourceCount -= 5;
+                int index = UnityEngine.Random.Range(0, _units.Count);
+
+                if (_units[index].IsVacant)
                 {
-                    int index = UnityEngine.Random.Range(0, _units.Count);  
                     _units[index].SetTarget(_flag);
-                    _flag.BuildBase(_units[index]);
+                    Debug.Log(_units[index]);
+                    var newUnit = _units[index];
+                    _flag.BuildBase();
                     _flag.UnSet();
                     _units.RemoveAt(index);
                 }
             }
         }
-    }
-
-    private void ExchangeResourcesForUnits()
-    {
-        if (_resourceCount > 3)
+        else
         {
-            Debug.Log("Обмен выполняется");
-            _resourceCount -= 3;
-            _unitSpawner.SpawnOneUnit();
+            if (_resourceCount > 3)
+            { 
+                Debug.Log("Спавн юнита");
+                Debug.Log("Обмен выполняется");
+                _resourceCount -= 3;
+                _unitSpawner.SpawnOneUnit();
+            }
         }
     }
 

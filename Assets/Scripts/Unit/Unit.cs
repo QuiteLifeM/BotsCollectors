@@ -6,7 +6,6 @@ public class Unit : MonoBehaviour
     private UnitMover _mover;
     private Vector3 _basePosition;
     private Resource _resource;
-    private Flag _flag;
 
     public bool IsVacant { get; private set; }
 
@@ -37,7 +36,6 @@ public class Unit : MonoBehaviour
 
     public void SetTarget(Flag flag)
     {
-
         _mover.SetTarget(flag.transform.position);
         IsVacant = false;
     }
@@ -70,6 +68,11 @@ public class Unit : MonoBehaviour
                 _resource.transform.SetParent(unitBase.transform);
                 _mover.SetTarget(transform.position);
             }
+        }
+
+        if (collider.TryGetComponent(out Flag flag))
+        {
+            IsVacant = true;
         }
     }
 }

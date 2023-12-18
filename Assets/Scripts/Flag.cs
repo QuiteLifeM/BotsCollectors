@@ -24,16 +24,18 @@ public class Flag : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void BuildBase(Unit unit)
+    public void BuildBase()
     {
         if (_base != null)
         {
-            Base newBase = Instantiate(_base, transform.position, Quaternion.identity);
-            newBase.GetUnit(unit);
+            //TO DO так корректно???
+            float half = 0.5f;
+            float shift = _base.transform.localScale.y * half;
+            Base newBase = Instantiate(_base, transform.position + new Vector3(0f, shift, 0f), Quaternion.identity);
         }
         else
         {
-            Debug.Log("А база то не выбрана");
+            Debug.LogError("А базы то нет");
         }
     }
 }
