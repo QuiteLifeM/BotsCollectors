@@ -13,7 +13,10 @@ public class UnitSpawner : MonoBehaviour
 
     public List<Unit> GetUnits()
     {
-        return _units;
+        List<Unit> units = new List<Unit>(_units);
+        _units.Clear();
+
+        return units;
     }
 
     public void SpawnOneUnit()

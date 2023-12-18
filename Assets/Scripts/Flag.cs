@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Flag : MonoBehaviour
@@ -24,14 +25,21 @@ public class Flag : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void BuildBase()
+    public void BuildBase(Unit unit)
     {
+        if (unit == null)
+        {
+            throw new ArgumentNullException(nameof(unit));
+        }
+
         if (_base != null)
         {
             //TO DO так корректно???
             float half = 0.5f;
             float shift = _base.transform.localScale.y * half;
             Base newBase = Instantiate(_base, transform.position + new Vector3(0f, shift, 0f), Quaternion.identity);
+            Debug.Log(newBase);
+            newBase.AddUnit(unit);
         }
         else
         {

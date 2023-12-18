@@ -61,7 +61,6 @@ public class Unit : MonoBehaviour
 
         if (collider.TryGetComponent(out Base unitBase))
         {
-
             if (_resource != null)
             {
                 IsVacant = true;

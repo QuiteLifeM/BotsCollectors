@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Scanner))]
@@ -8,7 +9,7 @@ public class Base : MonoBehaviour
 {
     private Scanner _scanner;
     private UnitSpawner _unitSpawner;
-    private List<Unit> _units;
+    private List<Unit> _units = new List<Unit>();
     private Queue<Resource> _scannedResources;
     private int _resourceCount;
     private float _delay = 0.000000000002f;
@@ -21,7 +22,7 @@ public class Base : MonoBehaviour
         IsProduced = false;
         _scanner = GetComponent<Scanner>();
         _unitSpawner = GetComponent<UnitSpawner>();
-        _units = _unitSpawner.GetUnits();
+        _units.AddRange(_unitSpawner.GetUnits());
         _scannedResources = _scanner.GetResources();
         StartCoroutine(SetUnits());
     }
@@ -32,7 +33,7 @@ public class Base : MonoBehaviour
         ExchangeResources();
     }
 
-    public void GetUnit(Unit unit)
+    public void AddUnit(Unit unit)
     {
         _units.Add(unit);
     }
@@ -61,11 +62,6 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void GetUnits()
-    {
-        _units = _unitSpawner.GetUnits();
-    }
-
     private void ExchangeResources()
     {
         if (_flag != null && _flag.IsSet)
@@ -80,7 +76,7 @@ public class Base : MonoBehaviour
                     _units[index].SetTarget(_flag);
                     Debug.Log(_units[index]);
                     var newUnit = _units[index];
-                    _flag.BuildBase();
+                    _flag.BuildBase(newUnit);
                     _flag.UnSet();
                     _units.RemoveAt(index);
                 }
@@ -90,10 +86,9 @@ public class Base : MonoBehaviour
         {
             if (_resourceCount > 3)
             { 
-                Debug.Log("Спавн юнита");
-                Debug.Log("Обмен выполняется");
                 _resourceCount -= 3;
                 _unitSpawner.SpawnOneUnit();
+                _units.AddRange(_unitSpawner.GetUnits());
             }
         }
     }
